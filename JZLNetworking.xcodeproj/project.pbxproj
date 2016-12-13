@@ -13,6 +13,7 @@
 		93134ED51DFFC61F00726C47 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 93134ED31DFFC61F00726C47 /* Main.storyboard */; };
 		93134ED71DFFC61F00726C47 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93134ED61DFFC61F00726C47 /* Assets.xcassets */; };
 		93134EDA1DFFC61F00726C47 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 93134ED81DFFC61F00726C47 /* LaunchScreen.storyboard */; };
+		93134EE31DFFC7FE00726C47 /* JZLNetworkingTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 93134EE21DFFC7FE00726C47 /* JZLNetworkingTool.m */; };
 		CA7A8E977D05E92E3407C8DC /* libPods-JZLNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D17EFE3D9349537C67ECFA1 /* libPods-JZLNetworking.a */; };
 /* End PBXBuildFile section */
 
@@ -29,6 +30,8 @@
 		93134ED61DFFC61F00726C47 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		93134ED91DFFC61F00726C47 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		93134EDB1DFFC61F00726C47 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		93134EE11DFFC7FE00726C47 /* JZLNetworkingTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JZLNetworkingTool.h; sourceTree = "<group>"; };
+		93134EE21DFFC7FE00726C47 /* JZLNetworkingTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JZLNetworkingTool.m; sourceTree = "<group>"; };
 		F6637B99BC3D9FDD03001D56 /* Pods-JZLNetworking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JZLNetworking.release.xcconfig"; path = "Pods/Target Support Files/Pods-JZLNetworking/Pods-JZLNetworking.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -86,6 +89,8 @@
 				93134ECE1DFFC61E00726C47 /* AppDelegate.m */,
 				93134ED01DFFC61E00726C47 /* ViewController.h */,
 				93134ED11DFFC61E00726C47 /* ViewController.m */,
+				93134EE11DFFC7FE00726C47 /* JZLNetworkingTool.h */,
+				93134EE21DFFC7FE00726C47 /* JZLNetworkingTool.m */,
 				93134ED31DFFC61F00726C47 /* Main.storyboard */,
 				93134ED61DFFC61F00726C47 /* Assets.xcassets */,
 				93134ED81DFFC61F00726C47 /* LaunchScreen.storyboard */,
@@ -226,6 +231,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				93134EE31DFFC7FE00726C47 /* JZLNetworkingTool.m in Sources */,
 				93134ED21DFFC61E00726C47 /* ViewController.m in Sources */,
 				93134ECF1DFFC61E00726C47 /* AppDelegate.m in Sources */,
 				93134ECC1DFFC61E00726C47 /* main.m in Sources */,
@@ -387,6 +393,7 @@
 				93134EE01DFFC61F00726C47 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

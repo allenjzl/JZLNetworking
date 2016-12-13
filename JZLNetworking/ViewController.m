@@ -7,7 +7,7 @@
 //
 
 #import "ViewController.h"
-
+#import "JZLNetworkingTool.h"
 @interface ViewController ()
 
 @end
@@ -16,7 +16,15 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+    NSString *httpUrl = @"http://japi.juhe.cn/book/recommend.from";
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+    [params setValue:@"bfb12777f7e63ffcfb88d2dfb9d529c1" forKey:@"key"];
+    [JZLNetworkingTool getWithUrl:httpUrl params:params success:^(NSURLSessionDataTask *task, id responseObject) {
+        //这里去做成功后返回的数据的处理
+        NSLog(@"%@",responseObject);
+    } failed:^(NSURLSessionDataTask *task, NSError *error) {
+        NSLog(@"%@",error);
+    }];
 }
 
 
