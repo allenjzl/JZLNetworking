@@ -17,7 +17,7 @@
     static dispatch_once_t onceToken;
     static JZLNetworkingTool *instance;
     dispatch_once(&onceToken, ^{
-        NSURL *baseUrl = [NSURL URLWithString:@"http://v1594881x7.imwork.net:21815/SpringMVC/"];
+        NSURL *baseUrl = [NSURL URLWithString:@""];
         instance = [[JZLNetworkingTool alloc] initWithBaseURL:baseUrl];
         instance.responseSerializer.acceptableContentTypes = [NSSet setWithArray:@[@"application/json",
                                                                                    @"text/html",
@@ -30,25 +30,48 @@
     return instance;
 }
 
+- (NSURLSession *)downloadSession
+{
+    if (_downloadSession == nil) {
+        
+        NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+        
+        // nil : nil的效果跟 [[NSOperationQueue alloc] init] 是一样的
+        _downloadSession = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:nil];
+    }
+    
+    return _downloadSession;
+}
+
 
 
 //get请求
 + (void)getWithUrl: (NSString *)url params: (NSDictionary *)params success: (responseSuccess)success failed: (responseFailed)failed  {
     [[JZLNetworkingTool sharedManager] GET:url parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
         //请求成功的回调
-        success(task,responseObject);
+        if (success) {
+            success(task,responseObject);
+        }
+        
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
         //请求失败的回调
-        failed(task,error);
+        if (failed) {
+             failed(task,error);
+        }
+       
     }];
 }
 
 //post请求
 + (void)postWithUrl:(NSString *)url params:(NSDictionary *)params success:(responseSuccess)success failed:(responseFailed)failed {
     [[JZLNetworkingTool sharedManager] POST:url parameters:params progress:nil success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        success(task,responseObject);
+        if (success) {
+            success(task,responseObject);
+        }
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        failed(task,error);
+        if (failed) {
+            failed(task,error);
+        }
     }];
 }
 
@@ -58,112 +81,115 @@
     [[JZLNetworkingTool sharedManager] POST:url parameters:params constructingBodyWithBlock:^(id<AFMultipartFormData>  _Nonnull formData) {
         [formData appendPartWithFileData:fileData name:name fileName:fileName mimeType:mimeType];
     } progress:^(NSProgress * _Nonnull uploadProgress) {
-        progress(uploadProgress);
+        if (progress) {
+            progress(uploadProgress);
+        }
+        
         
     } success:^(NSURLSessionDataTask * _Nonnull task, id  _Nullable responseObject) {
-        success(task,responseObject);
+        if (success) {
+            success(task,responseObject);
+        }
         
     } failure:^(NSURLSessionDataTask * _Nullable task, NSError * _Nonnull error) {
-        failed(task,error);
+        if (failed) {
+            failed(task,error);
+        }
         
     }];
    
 }
 
-//文件下载
-+ (void)downloadWithUrl: (NSString *)url savePathUrl: (NSURL *)fileUrl progress: (progress)progress success: (downloadSuccess)success failed: (downloadFailed)failed {
-    NSURL *urlPath = [NSURL  URLWithString:url];
-    NSURLRequest *request = [NSURLRequest requestWithURL:urlPath];
-    NSURLSessionDownloadTask *downloadTask = [[JZLNetworkingTool sharedManager] downloadTaskWithRequest:request progress:^(NSProgress * _Nonnull downloadProgress) {
-        //可以在此block里面返回主线程去刷新下载进度条
-        progress(downloadProgress);
-        if (downloadProgress.totalUnitCount == 1) {
-            //下载完成清空断点数据
-            [JZLNetworkingTool sharedManager].resumeData = nil;
-            //清除沙盒文件
-            NSFileManager *fileMger = [NSFileManager defaultManager];
-            NSString *resumePath = [[NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES)objectAtIndex:0]stringByAppendingPathComponent:[JZLNetworkingTool sharedManager].resumeDataPath];
-            if ([fileMger fileExistsAtPath:resumePath]) {
-                NSError *err;
-                [fileMger removeItemAtPath:resumePath error:&err];
-            }
-            
-        }
-    } destination:^NSURL * _Nonnull(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
-        return [fileUrl URLByAppendingPathComponent:[response suggestedFilename]];
-    } completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
-        if (error) {
-            failed(error);
-        }else {
-            //可以根据文件路径拿到下载的文件进行操作,比如显示图片
-            success(response,filePath);
-            [JZLNetworkingTool sharedManager].dataPath = [filePath absoluteString];
-        }
-    }];
-    [JZLNetworkingTool sharedManager].downloadTask = downloadTask;
-    [downloadTask resume];
+//文件下载 支持断点下载
++ (void)downloadWithUrl: (NSString *)url {
+    // 1. URL
+    NSURL *URL = [NSURL URLWithString:url];
+    
+    // 2. 发起下载任务
+    [JZLNetworkingTool sharedManager].downloadTask = [[JZLNetworkingTool sharedManager].downloadSession downloadTaskWithURL:URL];
+    
+    // 3. 启动下载任务
+    [[JZLNetworkingTool sharedManager].downloadTask resume];
   
 }
 
+
+
+
+
 //暂停下载
 - (void)pauseDownload {
-    if (self.downloadTask) {
-        [self.downloadTask cancelByProducingResumeData:^(NSData * _Nullable resumeData) {
-            self.resumeData = resumeData;
-            //将已经下载的数据存到沙盒,下次APP重启后也可以继续下载
-            NSString *doc = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
-            // 拼接文件路径   上面获取的文件路径加上文件名
-            NSString *path = [self.dataPath stringByAppendingString:@".plist"];
-            NSString *plistPath = [doc stringByAppendingPathComponent:path];
-            self.resumeDataPath = plistPath;
-            [resumeData writeToFile:plistPath atomically:YES];
-            [self.downloadTask suspend];
-            self.downloadTask = nil;
-        }];
-    }
-
+    [self.downloadTask cancelByProducingResumeData:^(NSData * _Nullable resumeData) {
+        self.resumeData = resumeData;
+        //将已经下载的数据存到沙盒,下次APP重启后也可以继续下载
+        NSString *doc = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) lastObject];
+        // 拼接文件路径   上面获取的文件路径加上文件名
+        NSString *path = [@"sssssaad" stringByAppendingString:@".plist"];
+        NSString *plistPath = [doc stringByAppendingPathComponent:path];
+        self.resumeDataPath = plistPath;
+        [resumeData writeToFile:plistPath atomically:YES];
+        self.resumeData = resumeData;
+        self.downloadTask = nil;
+    }];
+   
 }
 
 //继续下载
 - (void)resumeDownloadprogress: (progress)progress success: (downloadSuccess)success failed: (downloadFailed)failed  {
-    //先去检查内存中是否有续传文件
     if (self.resumeData == nil) {
         NSData *resume_data = [NSData dataWithContentsOfFile:self.resumeDataPath];
-        //如果沙盒和内存都没有,重新下载
         if (resume_data == nil) {
+            // 即没有内存续传数据,也没有沙盒续传数据,就续传了
             return;
-        }else {
+        } else {
+            // 当沙盒有续传数据时,在内存中保存一份
             self.resumeData = resume_data;
         }
     }
-    if (self.resumeData != nil && self.downloadTask != nil) {
-        self.downloadTask = [[JZLNetworkingTool sharedManager] downloadTaskWithResumeData:self.resumeData progress:^(NSProgress * _Nonnull downloadProgress) {
-            progress(downloadProgress);
-        } destination:^NSURL * _Nonnull(NSURL * _Nonnull targetPath, NSURLResponse * _Nonnull response) {
-            return [NSURL URLWithString:self.dataPath];
-        } completionHandler:^(NSURLResponse * _Nonnull response, NSURL * _Nullable filePath, NSError * _Nullable error) {
-            if (error) {
-                failed(error);
-            }else {
-                success(response,filePath);
-            }
-
-        }];
+    
+    // 续传数据时,依然不能使用回调
+    // 续传数据时起始新发起了一个下载任务,因为cancel方法是把之前的下载任务干掉了 (类似于NSURLConnection的cancel)
+    // resumeData : 当新建续传数据时,resumeData不能为空,一旦为空,就崩溃
+    // downloadTaskWithResumeData :已经把Range封装进去了
+    
+    if (self.resumeData != nil) {
+        self.downloadTask = [self.downloadSession downloadTaskWithResumeData:self.resumeData];
+        // 重新发起续传任务时,也要手动的启动任务
         [self.downloadTask resume];
+        
     }
 }
 
+#pragma NSURLSessionDownloadDelegate
+    
+    /// 监听文件下载进度的代理方法
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask
+didWriteData:(int64_t)bytesWritten
+totalBytesWritten:(int64_t)totalBytesWritten
+totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite
+    {
+        // 计算进度
+        float downloadProgress = (float)totalBytesWritten / totalBytesExpectedToWrite;
+        NSLog(@"%f",downloadProgress);
+        
+        
+    }
+    
+/// 文件下载结束时的代理方法 (必须实现的)
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask
+didFinishDownloadingToURL:(NSURL *)location
+{
+    // location : 文件下载结束之后的缓存路径
+    // 使用session实现文件下载时,文件下载结束之后,默认会删除,所以文件下载结束之后,需要我们手动的保存一份
+    NSLog(@"%@",location.path);
+    
+    NSString *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
+   // NSString *path = @"/Users/allenjzl/Desktop/ssssss/zzzz.zip";
+    // 文件下载结束之后,需要立即把文件拷贝到一个不会销毁的地方
+    [[NSFileManager defaultManager] copyItemAtPath:location.path toPath:[path stringByAppendingString:@"/.zzzzzzz.zip"] error:NULL];
+    NSLog(@"%@",path);
+}
 
-
-
-
-
-
-
-
-
-
-
-
+    
 
 @end

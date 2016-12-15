@@ -14,6 +14,7 @@
 		93134ED71DFFC61F00726C47 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 93134ED61DFFC61F00726C47 /* Assets.xcassets */; };
 		93134EDA1DFFC61F00726C47 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 93134ED81DFFC61F00726C47 /* LaunchScreen.storyboard */; };
 		93134EE31DFFC7FE00726C47 /* JZLNetworkingTool.m in Sources */ = {isa = PBXBuildFile; fileRef = 93134EE21DFFC7FE00726C47 /* JZLNetworkingTool.m */; };
+		931A45361E01497000BF4B72 /* WE.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 931A45351E01497000BF4B72 /* WE.jpg */; };
 		CA7A8E977D05E92E3407C8DC /* libPods-JZLNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0D17EFE3D9349537C67ECFA1 /* libPods-JZLNetworking.a */; };
 /* End PBXBuildFile section */
 
@@ -32,6 +33,7 @@
 		93134EDB1DFFC61F00726C47 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		93134EE11DFFC7FE00726C47 /* JZLNetworkingTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JZLNetworkingTool.h; sourceTree = "<group>"; };
 		93134EE21DFFC7FE00726C47 /* JZLNetworkingTool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JZLNetworkingTool.m; sourceTree = "<group>"; };
+		931A45351E01497000BF4B72 /* WE.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = WE.jpg; sourceTree = "<group>"; };
 		F6637B99BC3D9FDD03001D56 /* Pods-JZLNetworking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-JZLNetworking.release.xcconfig"; path = "Pods/Target Support Files/Pods-JZLNetworking/Pods-JZLNetworking.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -91,6 +93,7 @@
 				93134ED11DFFC61E00726C47 /* ViewController.m */,
 				93134EE11DFFC7FE00726C47 /* JZLNetworkingTool.h */,
 				93134EE21DFFC7FE00726C47 /* JZLNetworkingTool.m */,
+				931A45351E01497000BF4B72 /* WE.jpg */,
 				93134ED31DFFC61F00726C47 /* Main.storyboard */,
 				93134ED61DFFC61F00726C47 /* Assets.xcassets */,
 				93134ED81DFFC61F00726C47 /* LaunchScreen.storyboard */,
@@ -171,6 +174,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				93134EDA1DFFC61F00726C47 /* LaunchScreen.storyboard in Resources */,
+				931A45361E01497000BF4B72 /* WE.jpg in Resources */,
 				93134ED71DFFC61F00726C47 /* Assets.xcassets in Resources */,
 				93134ED51DFFC61F00726C47 /* Main.storyboard in Resources */,
 			);

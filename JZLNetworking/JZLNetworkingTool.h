@@ -24,28 +24,18 @@ typedef void(^downloadFailed)( NSError *error);
 //文件上传下载的进度block
 typedef void (^progress)(NSProgress *progress);
 
-//网络状态管理单例
-static AFNetworkReachabilityManager *reachabilityManager;
-
-////网络模式
-//typedef enum {
-//    JZLNetworkingStatusUnknow = -1,//
-//    JZLNetworkingStatusNoNet = 0,
-//    JZLNetworkingStatus
-//    
-//    
-//}JZLAFNetworkReachabilityStatus;
 
 
-@interface JZLNetworkingTool : AFHTTPSessionManager
+
+@interface JZLNetworkingTool : AFHTTPSessionManager<NSURLSessionDownloadDelegate>
 @property (nonatomic, strong) NSURLSessionDownloadTask *downloadTask;
 //已经下载的数据
 @property (nonatomic, strong) NSData *resumeData;
-//文件保存路径
-@property (nonatomic, copy) NSString *dataPath;
+
 //续传文件沙盒存储路径
 @property (nonatomic, copy) NSString *resumeDataPath;
-
+/// 自定义session,设置代理
+@property (nonatomic, strong) NSURLSession *downloadSession;
 /**
  管理者单例
 
@@ -89,20 +79,14 @@ static AFNetworkReachabilityManager *reachabilityManager;
  @param success 成功回调
  @param failed 失败回调
  */
+
 + (void)uploadWithUrl: (NSString *)url params: (NSDictionary *)params fileData: (NSData *)fileData name: (NSString *)name fileName: (NSString *)fileName mimeType: (NSString *)mimeType progress: (progress)progress success: (responseSuccess)success failed: (responseFailed)failed;
 
 
-/**
- 文件下载
 
- @param url 网络请求url
- @param fileUrl 保存文件url
- @param progress 下载进度
- @param success 成功回调
- @param failed 失败回调
+//文件下载
++ (void)downloadWithUrl: (NSString *)url;
 
- */
-+ (void)downloadWithUrl: (NSString *)url savePathUrl: (NSURL *)fileUrl progress: (progress)progress success: (downloadSuccess)success failed: (downloadFailed)failed;
 
 /**
  暂停下载
@@ -118,5 +102,8 @@ static AFNetworkReachabilityManager *reachabilityManager;
  @param failed 失败回调
  */
 - (void)resumeDownloadprogress: (progress)progress success: (downloadSuccess)success failed: (downloadFailed)failed ;
+
+
+
 
 @end
