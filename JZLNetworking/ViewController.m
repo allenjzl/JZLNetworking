@@ -8,6 +8,7 @@
 
 #import "ViewController.h"
 #import "JZLNetworkingTool.h"
+#import "JZLCache.h"
 @interface ViewController ()
 
 @end
@@ -16,12 +17,27 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    //get请求
+    NSDictionary * params = @{@"key":@"bfb12777f7e63ffcfb88d2dfb9d529c1",@"ranks":@1};
+    [JZLNetworkingTool getWithUrl:@"https://kyfw.12306.cn/otn" params:nil isReadCache:YES success:^(NSURLSessionDataTask *task, id responseObject) {
+        NSLog(@"%@",responseObject);
+    } failed:^(NSURLSessionDataTask *task, NSError *error, id responseObject) {
+        NSLog(@"%@",error);
+        NSLog(@"%@",responseObject);
+    }];
+
+    
+    
+    
+    
+    
     //post请求
-//    NSDictionary * params = @{@"AppKey":@"161250",@"AppSecurity":@"583d1cfe5234e89ea4000001"};
-//    [JZLNetworkingTool postWithUrl:@"https://www.corporatetravel.ctrip.com/corpservice/authorize/ticket" params:params success:^(NSURLSessionDataTask *task, id responseObject) {
+//    NSDictionary * params = @{@"AppKey":@"16125033",@"AppSecurity":@"583d1cfe5234e89ea4000001"};
+//    [JZLNetworkingTool postWithUrl:@"https://www.corporatetravel.ctrip.com/corpservice/authorize/ticket" params:params isReadCache:YES success:^(NSURLSessionDataTask *task, id responseObject) {
 //        NSLog(@"%@",responseObject);
-//    } failed:^(NSURLSessionDataTask *task, NSError *error) {
-//        NSLog(@"%@",error);
+//    } failed:^(NSURLSessionDataTask *task, NSError *error, id responseObject) {
+//                NSLog(@"%@",error);
+//                NSLog(@"%@",responseObject);
 //    }];
     
     //上传
@@ -37,8 +53,8 @@
     
     
 //    //下载
-    NSString *url = @"http://localhost/test.zip";
-    [JZLNetworkingTool downloadWithUrl:url];
+//    NSString *url = @"http://localhost/test.zip";
+//    [JZLNetworkingTool downloadWithUrl:url];
 
 }
 - (IBAction)pauseDownload:(id)sender {

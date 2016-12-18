@@ -8,12 +8,22 @@
 
 #import <Foundation/Foundation.h>
 #import <AFHTTPSessionManager.h>
+/**
+ *  是否开启https SSL 验证
+ *
+ *  @return YES为开启，NO为关闭
+ */
+#define openHttpsSSL YES
+/**
+ *  SSL 证书名称，仅支持cer格式。“app.bishe.com.cer”,则填“app.bishe.com”
+ */
+#define certificate @"xiaokaapi.com"
 
 //请求成功的回调block
 typedef void(^responseSuccess)(NSURLSessionDataTask *task, id  responseObject);
 
 //请求失败的回调block
-typedef void(^responseFailed)(NSURLSessionDataTask *task, NSError *error);
+typedef void(^responseFailed)(NSURLSessionDataTask *task, NSError *error,id responseObject);
 
 //文件下载的成功回调block
 typedef void(^downloadSuccess)(NSURLResponse *response, NSURL *filePath);
@@ -36,6 +46,8 @@ typedef void (^progress)(NSProgress *progress);
 @property (nonatomic, copy) NSString *resumeDataPath;
 /// 自定义session,设置代理
 @property (nonatomic, strong) NSURLSession *downloadSession;
+
+
 /**
  管理者单例
 
@@ -48,10 +60,13 @@ typedef void (^progress)(NSProgress *progress);
 
  @param url 请求url
  @param params 参数
+ @param isReadCache 是否读取缓存
  @param success 成功回调
  @param failed 失败回调
  */
-+ (void)getWithUrl: (NSString *)url params: (NSDictionary *)params success: (responseSuccess)success failed: (responseFailed)failed ;
+
+
++ (void)getWithUrl: (NSString *)url params: (NSDictionary *)params isReadCache: (BOOL)isReadCache success: (responseSuccess)success failed: (responseFailed)failed;
 
 
 /**
@@ -59,10 +74,11 @@ typedef void (^progress)(NSProgress *progress);
 
  @param url 请求url
  @param params 参数
+  @param isReadCache 是否读取缓存
  @param success 成功回调
  @param failed 失败回调
  */
-+ (void)postWithUrl: (NSString *)url params: (NSDictionary *)params success: (responseSuccess)success failed: (responseFailed)failed ;
++ (void)postWithUrl:(NSString *)url params:(NSDictionary *)params isReadCache: (BOOL)isReadCache success:(responseSuccess)success failed:(responseFailed)failed ;
 
 
 

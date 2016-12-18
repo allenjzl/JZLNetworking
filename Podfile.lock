@@ -14,13 +14,16 @@ PODS:
   - AFNetworking/Serialization (3.1.0)
   - AFNetworking/UIKit (3.1.0):
     - AFNetworking/NSURLSession
+  - YYCache (1.0.3)
 
 DEPENDENCIES:
   - AFNetworking (~> 3.1.0)
+  - YYCache (~> 1.0.3)
 
 SPEC CHECKSUMS:
   AFNetworking: 5e0e199f73d8626b11e79750991f5d173d1f8b67
+  YYCache: 282f35b5b0990833d0b7a06d864a87141a021da2
 
-PODFILE CHECKSUM: bab256c1f57a34f8ad264630eee6fffc8e2eef0e
+PODFILE CHECKSUM: 380f4d631f90ae57bcaf5e75496b6284b51dbcdb
 
 COCOAPODS: 1.1.1
